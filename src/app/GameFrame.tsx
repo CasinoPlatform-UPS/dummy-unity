@@ -1,9 +1,12 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Unity, useUnityContext } from 'react-unity-webgl';
+import { useOrientation } from '@/context/orientation';
 
 const GamePage = () => {
-    const { unityProvider, isLoaded, loadingProgression } = useUnityContext({
+
+    const orientation = useOrientation();
+    const { unityProvider, isLoaded, loadingProgression, sendMessage } = useUnityContext({
         loaderUrl: "/Build/Build.loader.js",
         dataUrl: "/Build/Build.data.unityweb",
         frameworkUrl: "/Build/Build.framework.js.unityweb",
@@ -11,6 +14,14 @@ const GamePage = () => {
     });
 
     const progress = Math.round(loadingProgression * 100);
+
+    useEffect(() => {
+
+        console.log("orientation is : ", orientation);
+        sendMessage('DeviceManager', 'SetOrientation', orientation);
+
+    }, [orientation])
+
 
     return (
         <div className="w-full h-screen bg-black flex items-center justify-center">
